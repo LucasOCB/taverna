@@ -84,14 +84,15 @@
       <label class="r-epica"><input type="radio" name="raridade" value="epica"><span>Épica</span></label>
       <label class="r-lendaria"><input type="radio" name="raridade" value="lendaria"><span>Lendária</span></label>
     </fieldset>
-    <div class="duas">
-      <label>Recompensa
-        <input name="recompensa" maxlength="140" placeholder="Um beijo e um café">
-      </label>
-      <label>Prazo
-        <input name="prazo" type="date">
-      </label>
-    </div>
+    <fieldset class="raridades prioridades">
+      <legend>Prioridade</legend>
+      <label class="p-baixa"><input type="radio" name="prioridade" value="baixa" checked><span>Quando der</span></label>
+      <label class="p-media"><input type="radio" name="prioridade" value="media"><span>Importante</span></label>
+      <label class="p-alta"><input type="radio" name="prioridade" value="alta"><span>Urgente</span></label>
+    </fieldset>
+    <label>Prazo
+      <input name="prazo" type="date">
+    </label>
     <div class="acoes">
       <button class="link" value="cancelar" formnovalidate>cancelar</button>
       <button class="botao" value="enviar" id="btn-enviar">Selar e pregar</button>

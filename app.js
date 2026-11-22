@@ -5,6 +5,7 @@ const $ = (s, el = document) => el.querySelector(s);
 const MARCA = /<!--\s*quadro:v1\s*(\{.*?\})\s*-->/s;
 const AUTOR = /<!--\s*quadro:autor\s+(\w+)\s*-->/;
 const RARIDADES = { comum: "Comum", rara: "Rara", epica: "Épica", lendaria: "Lendária" };
+const PRIORIDADES = { baixa: "Quando der", media: "Importante", alta: "Urgente" };
 const CHAVE_SESSAO = "quadro-sessao";
 const CHAVE_SOM = "quadro-som";
 const PARAMS = new URLSearchParams(location.search);
@@ -163,7 +164,7 @@ function lerMissao(issue) {
     titulo: issue.title,
     descricao: corpo.replace(MARCA, "").trim(),
     raridade: RARIDADES[meta.raridade] ? meta.raridade : "comum",
-    recompensa: meta.recompensa || "",
+    prioridade: PRIORIDADES[meta.prioridade] ? meta.prioridade : "baixa",
     prazo: meta.prazo || "",
     criada: issue.created_at,
     fechada: issue.closed_at,
@@ -236,9 +237,8 @@ function cartao(m, i, pregar) {
     el("h3", {}, m.titulo),
     m.descricao ? el("p", { class: "resumo" }, m.descricao) : null,
     el("div", { class: "rodape" },
-      m.recompensa ? el("span", {}, el("b", {}, "Recompensa"), m.recompensa) : null,
-      m.prazo ? el("span", {}, el("b", {}, "Prazo"), dataBR(m.prazo)) : null,
-      !m.recompensa && !m.prazo ? el("span", {}, `Pregada em ${dataBR(m.criada)}`) : null),
+      el("span", { class: `prioridade p-${m.prioridade}` }, el("b", {}, "Prioridade"), PRIORIDADES[m.prioridade]),
+      m.prazo ? el("span", {}, el("b", {}, "Prazo"), dataBR(m.prazo)) : el("span", {}, el("b", {}, "Pregada"), dataBR(m.criada))),
     ESTAMPA[m.estado] ? el("span", { class: `estampa ${m.estado}` }, ESTAMPA[m.estado]) : null);
   b.addEventListener("click", () => abrirDetalhe(m));
   return b;
@@ -296,7 +296,7 @@ async function abrirDetalhe(m) {
       el("p", { class: "status" }, STATUS[m.estado]),
       m.descricao ? el("p", { class: "corpo" }, m.descricao) : null,
       el("dl", {},
-        el("dt", {}, "Recompensa"), el("dd", {}, m.recompensa || "A gratidão eterna da corte"),
+        el("dt", {}, "Prioridade"), el("dd", { class: `prioridade p-${m.prioridade}` }, PRIORIDADES[m.prioridade]),
         el("dt", {}, "Prazo"), el("dd", {}, m.prazo ? dataBR(m.prazo) : "Sem pressa"),
         el("dt", {}, "Pregada"), el("dd", {}, dataBR(m.criada)),
         m.fechada ? [el("dt", {}, "Encerrada"), el("dd", {}, dataBR(m.fechada))] : null),
@@ -338,7 +338,7 @@ function prepararNova() {
     ev.preventDefault();
     const d = Object.fromEntries(new FormData(form));
     const btn = $("#btn-enviar"); btn.disabled = true; btn.textContent = "Selando…";
-    const meta = { raridade: d.raridade, recompensa: d.recompensa.trim(), prazo: d.prazo };
+    const meta = { raridade: d.raridade, prioridade: d.prioridade, prazo: d.prazo };
     try {
       const nova = await gh("/issues", {
         method: "POST",
@@ -463,11 +463,11 @@ let demoIssues = null;
 function demo(caminho, opcoes) {
   const agora = Date.now(), dia = 864e5;
   demoIssues ??= [
-    { number: 4, title: "Resgatar a encomenda nos Correios", body: '<!-- quadro:v1 {"raridade":"epica","recompensa":"Um beijo e um café","prazo":"2026-11-24"} -->\nA agência fecha às 17h. Levar documento.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - dia).toISOString(), comments: 1 },
-    { number: 3, title: "Montar a prateleira da sala", body: '<!-- quadro:v1 {"raridade":"lendaria","recompensa":"Jantar à escolha do herói","prazo":""} -->\nOs parafusos estão na gaveta da cozinha.', labels: [{ name: "missao" }, { name: "em-jornada" }], state: "open", created_at: new Date(agora - 3 * dia).toISOString(), comments: 0 },
-    { number: 2, title: "Trazer pão quentinho", body: '<!-- quadro:v1 {"raridade":"comum","recompensa":"","prazo":""} -->\n6 pães e 1 queijo minas.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - 2 * dia).toISOString(), comments: 0 },
-    { number: 5, title: "Caçar a aranha do banheiro", body: '<!-- quadro:v1 {"raridade":"lendaria","recompensa":"Glória eterna","prazo":"2026-11-22"} -->\nEla está atrás do espelho. Sem matar, levar para fora.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - dia / 2).toISOString(), comments: 0 },
-    { number: 1, title: "Derrotar a pilha de louça", body: '<!-- quadro:v1 {"raridade":"rara","recompensa":"Escolher o filme","prazo":""} -->\nInclusive a panela de ontem.', labels: [{ name: "missao" }], state: "closed", state_reason: "completed", created_at: new Date(agora - 6 * dia).toISOString(), closed_at: new Date(agora - 5 * dia).toISOString(), comments: 0 },
+    { number: 4, title: "Resgatar a encomenda nos Correios", body: '<!-- quadro:v1 {"raridade":"epica","prioridade":"alta","prazo":"2026-11-24"} -->\nA agência fecha às 17h. Levar documento.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - dia).toISOString(), comments: 1 },
+    { number: 3, title: "Montar a prateleira da sala", body: '<!-- quadro:v1 {"raridade":"lendaria","prioridade":"media","prazo":""} -->\nOs parafusos estão na gaveta da cozinha.', labels: [{ name: "missao" }, { name: "em-jornada" }], state: "open", created_at: new Date(agora - 3 * dia).toISOString(), comments: 0 },
+    { number: 2, title: "Trazer pão quentinho", body: '<!-- quadro:v1 {"raridade":"comum","prioridade":"baixa","prazo":""} -->\n6 pães e 1 queijo minas.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - 2 * dia).toISOString(), comments: 0 },
+    { number: 5, title: "Caçar a aranha do banheiro", body: '<!-- quadro:v1 {"raridade":"lendaria","prioridade":"media","prazo":"2026-11-22"} -->\nEla está atrás do espelho. Sem matar, levar para fora.', labels: [{ name: "missao" }], state: "open", created_at: new Date(agora - dia / 2).toISOString(), comments: 0 },
+    { number: 1, title: "Derrotar a pilha de louça", body: '<!-- quadro:v1 {"raridade":"rara","prioridade":"baixa","prazo":""} -->\nInclusive a panela de ontem.', labels: [{ name: "missao" }], state: "closed", state_reason: "completed", created_at: new Date(agora - 6 * dia).toISOString(), closed_at: new Date(agora - 5 * dia).toISOString(), comments: 0 },
   ];
   const corpo = opcoes.body ? JSON.parse(opcoes.body) : null;
   const n = Number((caminho.match(/^\/issues\/(\d+)/) || [])[1]);
