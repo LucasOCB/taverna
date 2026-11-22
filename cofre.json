@@ -1,0 +1,17 @@
+{
+ "v": 1,
+ "kdf": "PBKDF2-SHA256",
+ "iteracoes": 600000,
+ "portas": [
+  {
+   "sal": "z5xNfxjIH7oA4tY5Inns6w==",
+   "iv": "KXot2gt4cxjCOZVE",
+   "ct": "PIdytA4IblD1KynQfVRFiJH/M+iAbG6S9ZHsXhrNMApVs+mSoPIqX50g5+nyPo0lqYPAWl9KTQM1zav2jz1pfKr+F6uLSVRNrMzIDCpnleqn4JAMN9g6lH8oEHrY2GiHV63V/XidxtHvnlaBiuxDCmvos/6g5IhcozsNBYsoS41g5qBoVaQnLnjFOsoC9kK8gvMGQgWd9a3XDGF8NB6favIXqshzMrGRtfAVyC22bSffUEAsXD+UkysdUFWOdPspUvl1B1PqDTti29uDRsqmGluksR5aJYgppQ=="
+  },
+  {
+   "sal": "jfnzEQebJ51dEX/85hkT1w==",
+   "iv": "qgwtwDhYzVSqob9J",
+   "ct": "0sh7ij1NXsOzdhL2uJf3nYCga7h8JJ6if1vetFXd1jbAX23F6lC3kdCZ9zFqFTmHllN9Y0dzKYx+dfRSkxdUiOneE/h3j7Cr3B06AkopGcm95+jeqDZIMpXje/MQAg5zQi+npYeAG9wYnC+MCdnu2+MYZPGnUCE1ZwkmIiGpDH82huAk6uhkfoCsbZVvBDp0YeyXexhCjwe/JD8IzZ89q6X4eS6yfr5xImlVZLgLDyLl4vBwtUL8rX1pozSD4nE/yBXkiUhl/j3Pv3gJDp1rWqHry2CTJlVaWtw="
+  }
+ ]
+}
