@@ -9,6 +9,7 @@ const CHAVE_SESSAO = "quadro-sessao";
 const DEMO = new URLSearchParams(location.search).has("demo");
 
 let cfg = {}, sessao, missoes = [], abaAtual = "quadro";
+const recentes = new Map();
 
 /* ---------------- cofre ---------------- */
 const normalizar = (f) => f.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase().trim().replace(/\s+/g, " ");
@@ -87,6 +88,11 @@ function lerMissao(issue) {
 async function carregar() {
   const issues = await gh("/issues?state=all&labels=missao&per_page=100&sort=created&direction=desc");
   missoes = issues.filter((i) => !i.pull_request).map(lerMissao);
+  // missões recém-lançadas que a busca ainda não enxerga continuam no quadro por 2 min
+  for (const [n, r] of recentes) {
+    if (missoes.some((m) => m.numero === n) || Date.now() - r.ts > 120_000) recentes.delete(n);
+    else missoes.unshift(r.missao);
+  }
   desenhar();
 }
 
@@ -232,7 +238,7 @@ function prepararNova() {
     const btn = $("#btn-enviar"); btn.disabled = true; btn.textContent = "Selando…";
     const meta = { raridade: d.raridade, recompensa: d.recompensa.trim(), prazo: d.prazo };
     try {
-      await gh("/issues", {
+      const nova = await gh("/issues", {
         method: "POST",
         body: JSON.stringify({
           title: d.titulo.trim(),
@@ -242,7 +248,11 @@ function prepararNova() {
       });
       dlg.close();
       const c = $("#carimbo"); c.hidden = false; setTimeout(() => (c.hidden = true), 1900);
-      abaAtual = "quadro"; await carregar();
+      abaAtual = "quadro";
+      // a busca por rótulo do GitHub demora alguns segundos para ver a issue nova:
+      // entra no quadro pela resposta da criação e a lista confirma depois
+      if (nova?.number) { recentes.set(nova.number, { missao: lerMissao(nova), ts: Date.now() }); missoes = [lerMissao(nova), ...missoes]; desenhar(); setTimeout(() => carregar().catch(() => {}), 8000); }
+      else await carregar();
     } catch (e) { $("#erro-nova").textContent = e.message; }
     btn.disabled = false; btn.textContent = "Selar e enviar";
   });
