@@ -391,15 +391,18 @@ async function abrirLacre() {
   pularEscrita = false;
   if (!SEM_MOVIMENTO) { lacre.classList.add("rompendo"); await espera(560); }
   lacre.hidden = true;
-  await desenrolar();
+  // decide o que a carta mostra ANTES de desenrolar: o rolo para na altura
+  // medida ali; se o conteúdo mudar depois, os botões ficam atrás dele
   const lembrada = lerSessao();
+  $("#form-portao").hidden = !!lembrada;
+  $("#bem-vinda").hidden = !lembrada;
+  await desenrolar();
   if (lembrada) $("#carta-fala").textContent = lembrada.papel === "heroi"
     ? `Bem-vindo de volta, ${lembrada.heroi || "herói"}. A corte aguarda.`
     : `Bem-vinda de volta, ${lembrada.dama || "Dama"}. O herói aguarda suas ordens.`;
   await escrever($(".carta-titulo"), { vel: 70 });
   await escrever($("#carta-fala"), { vel: 30 });
   const alvo = lembrada ? $("#bem-vinda") : $("#form-portao");
-  alvo.hidden = false;
   requestAnimationFrame(() => alvo.classList.add("visivel"));
   if (!lembrada) $("#frase").focus({ preventScroll: true });
 }
