@@ -51,16 +51,18 @@
 <div id="quadro" class="quadro" hidden>
   <header class="topo">
     <p class="ornamento" aria-hidden="true"><i></i><b></b><i></i></p>
-    <h1>Quadro de Missões</h1>
+    <h1 id="titulo-sala">Quadro de Missões</h1>
     <p id="saudacao" class="saudacao"></p>
     <button id="sair" class="link sair" type="button">sair</button>
   </header>
 
-  <nav class="abas" role="tablist">
-    <button class="aba ativa" data-aba="quadro" role="tab">No quadro <span></span></button>
-    <button class="aba" data-aba="jornada" role="tab">Em jornada <span></span></button>
-    <button class="aba" data-aba="concluidas" role="tab">Concluídas <span></span></button>
+  <nav class="salas" aria-label="Salas da taverna">
+    <a class="sala" href="#missoes" data-sala="missoes">Missões <span></span></a>
+    <i aria-hidden="true"></i>
+    <a class="sala" href="#contratos" data-sala="contratos">Contratos <span></span></a>
   </nav>
+
+  <nav class="abas" role="tablist"></nav>
 
   <section id="lista" class="lista" aria-live="polite"></section>
 
@@ -98,6 +100,39 @@
       <button class="botao" value="enviar" id="btn-enviar">Selar e pregar</button>
     </div>
     <p class="erro" id="erro-nova" role="alert"></p>
+  </form>
+</dialog>
+
+<!-- NOVO CONTRATO / CONTRAPROPOSTA -->
+<dialog id="dlg-contrato" class="dialogo">
+  <form id="form-contrato" class="folha" method="dialog" novalidate>
+    <h2 class="folha-titulo" data-pena id="contrato-titulo-form">Novo contrato</h2>
+    <p class="preambulo" id="contrato-partes"></p>
+    <label>Nome do contrato
+      <input name="titulo" maxlength="120" required placeholder="Pacto do jantar de domingo">
+    </label>
+    <label>Do que se trata
+      <textarea name="objeto" rows="2" maxlength="1500" placeholder="O objeto do acordo, em uma ou duas frases"></textarea>
+    </label>
+    <div class="campo">Cláusulas
+      <ol id="editor-clausulas" class="editor-clausulas"></ol>
+      <button class="link mais" type="button" id="mais-clausula">+ acrescentar cláusula</button>
+    </div>
+    <label>Válido até <small>(em branco: sem prazo)</small>
+      <input name="vigencia" type="date">
+    </label>
+    <label id="campo-nota" hidden>Por que a contraproposta
+      <textarea name="nota" rows="2" maxlength="1500" placeholder="O que mudou e por quê"></textarea>
+    </label>
+    <label class="campo-assinatura">Sua assinatura
+      <input name="assinatura" class="assinatura" autocomplete="off" required>
+      <small id="dica-assinatura"></small>
+    </label>
+    <div class="acoes">
+      <button class="link" value="cancelar" formnovalidate>cancelar</button>
+      <button class="botao" value="enviar" id="btn-contrato">Assinar e propor</button>
+    </div>
+    <p class="erro" id="erro-contrato" role="alert"></p>
   </form>
 </dialog>
 

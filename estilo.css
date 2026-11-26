@@ -34,6 +34,7 @@ body::before {
   transition: opacity .8s;
 }
 body.no-quadro::before { background-image: url("assets/fundo-quadro.jpg"); }
+body.no-quadro.na-mesa::before { background-image: url("assets/fundo-mesa.jpg"); }
 @media (orientation: portrait) { body.no-portao::before { background-position: 12% 0; } }
 body::after { /* vinheta + névoa */
   content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
@@ -255,6 +256,81 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: sepia(1) opacity
 @keyframes carimbar { from { transform: scale(2.6) rotate(-30deg); opacity: 0; } to { transform: scale(1) rotate(-8deg); opacity: 1; } }
 @keyframes surgir { from { opacity: 0; transform: translateY(6px); } }
 
+/* ---------- salas (missões / contratos) ---------- */
+.salas { display: flex; justify-content: center; align-items: center; gap: 18px; margin: -4px 0 16px; }
+.salas i { width: 6px; height: 6px; transform: rotate(45deg); background: var(--ouro-escuro); }
+.sala {
+  position: relative; font-family: var(--f-titulo); font-weight: 500; font-size: 1.35rem; color: var(--osso-suave);
+  text-decoration: none; padding: 4px 6px; text-shadow: 0 1px 8px #000; transition: color .2s;
+}
+.sala:hover, .sala:focus-visible { color: var(--osso); outline: none; }
+.sala.ativa { color: var(--ouro); }
+.sala span:empty { display: none; }
+.sala span {
+  position: absolute; top: -2px; right: -14px; min-width: 18px; height: 18px; padding: 0 5px; border-radius: 9px;
+  font-family: var(--f-ui); font-size: .62rem; font-weight: 700; line-height: 18px; text-align: center; color: var(--osso);
+  background: radial-gradient(circle at 35% 30%, #a3382a, #5e1a13); box-shadow: 0 2px 4px rgba(0,0,0,.6); text-shadow: none;
+}
+
+/* ---------- contratos na mesa ---------- */
+.lista.mesa { gap: 26px 22px; }
+.cartao.contrato { padding-top: 10px; min-height: 230px; }
+.cartao.contrato::before { display: none; }
+.cartao.contrato .raridade { --cor-r: var(--lendaria); }
+.cartao.contrato .resumo { -webkit-line-clamp: 2; }
+.cartao.contrato .vez { color: var(--sangue); font-weight: 600; }
+.cartao.minha-vez { filter: drop-shadow(0 14px 14px rgba(0,0,0,.65)) drop-shadow(0 0 12px rgba(190,70,40,.35)); }
+.fita {
+  position: absolute; top: -6px; right: 8px; padding: 5px 10px 8px; font-family: var(--f-ui); font-weight: 700; font-size: .6rem;
+  letter-spacing: .18em; text-transform: uppercase; color: var(--osso); background: linear-gradient(#7a241a, #5e1a13);
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 50% 78%, 0 100%); box-shadow: 0 3px 6px rgba(0,0,0,.4);
+}
+.lacre-mini { position: absolute; right: -14px; top: -16px; width: 66px; transform: rotate(-12deg); filter: drop-shadow(0 4px 4px rgba(0,0,0,.5)); }
+.cartao.c-vigor h3 { padding-right: 36px; }
+.cartao.c-rasgado, .cartao.c-encerrado { filter: drop-shadow(0 14px 14px rgba(0,0,0,.65)) saturate(.7) brightness(.92); }
+
+/* ---------- documento do contrato ---------- */
+.contrato-doc .preambulo, .preambulo { text-align: center; font-family: var(--f-pena); font-style: italic; color: var(--tinta-suave); margin: 0 0 14px; font-size: 1.05rem; }
+#detalhe .status.vez { color: var(--sangue); font-weight: 600; }
+.clausulas { list-style: none; margin: 0 0 18px; padding: 0; counter-reset: none; }
+.clausulas li { padding: 8px 10px; margin: 0 -10px 4px; border-radius: 2px; }
+.clausulas li b { display: block; font-family: var(--f-ui); font-weight: 600; font-size: .64rem; letter-spacing: .18em; text-transform: uppercase; color: #7a5a3a; margin-bottom: 2px; }
+.clausulas li b em { font-style: normal; color: var(--sangue); letter-spacing: .1em; }
+.clausulas li p { margin: 0; font-family: var(--f-pena); font-size: 1.12rem; line-height: 1.5; white-space: pre-wrap; }
+.clausulas li.mudou { background: linear-gradient(100deg, rgba(196,150,60,.26), rgba(196,150,60,.1) 70%, transparent); }
+.clausulas li.retirada p { text-decoration: line-through; text-decoration-color: rgba(138,42,31,.7); opacity: .6; }
+.firmas { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; margin: 6px 0 18px; }
+.firma { display: grid; gap: 2px; text-align: center; }
+.firma .rubrica {
+  min-height: 2.6rem; display: grid; align-items: end; justify-content: center; border-bottom: 1px solid rgba(43,29,18,.55);
+  font-family: var(--f-pena); font-style: italic; font-size: 1.9rem; line-height: 1; color: #1d2a44; transform: rotate(-2deg);
+}
+.firma small { font-family: var(--f-ui); font-size: .58rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a3a; }
+.firma .quando { font-family: var(--f-pena); font-style: italic; font-size: .92rem; letter-spacing: 0; text-transform: none; color: var(--tinta-suave); }
+.firma:not(.ok) .quando { color: var(--sangue); }
+.assinar { border-top: 1px dashed rgba(43,29,18,.35); padding-top: 12px; margin-bottom: 6px; }
+.assinar .campo { display: block; font-family: var(--f-ui); font-weight: 600; font-size: .66rem; letter-spacing: .18em; text-transform: uppercase; color: #7a5a3a; }
+input.assinatura { font-family: var(--f-pena); font-style: italic; font-size: 1.7rem; color: #1d2a44; text-align: center; text-transform: none; letter-spacing: 0; }
+.link.armado { color: var(--sangue); text-decoration-color: var(--sangue); font-weight: 700; }
+.recado.evento { border-left: 2px dotted rgba(122,90,58,.7); }
+.recado.evento > p:first-of-type { font-style: italic; }
+.recado .nota { margin-top: 4px; padding-left: 8px; border-left: 1px solid rgba(43,29,18,.25); color: var(--tinta-suave); }
+.recado details { margin-top: 4px; font-size: .95rem; }
+.recado summary { cursor: pointer; font-family: var(--f-ui); font-size: .6rem; letter-spacing: .14em; text-transform: uppercase; color: #7a5a3a; }
+.recado details ol { margin: 6px 0 0; padding-left: 20px; }
+
+/* ---------- editor de cláusulas ---------- */
+.dialogo form label small, .dialogo .campo small { font-family: var(--f-pena); font-weight: 400; font-style: italic; letter-spacing: 0; text-transform: none; font-size: .9rem; color: var(--tinta-suave); }
+.editor-clausulas { list-style: none; margin: 6px 0 0; padding: 0; }
+.editor-clausulas li { position: relative; margin-bottom: 6px; }
+.editor-clausulas .num { display: block; font-size: .6rem; color: #9a7a55; margin-top: 4px; }
+.editor-clausulas textarea { min-height: 58px; padding-right: 34px; text-transform: none; letter-spacing: 0; font-weight: 400; }
+.tirar { position: absolute; right: 0; bottom: 10px; width: 30px; height: 30px; border: 0; background: none; cursor: pointer; font-size: 1.4rem; line-height: 1; color: var(--tinta-suave); opacity: .55; }
+.tirar:hover, .tirar:focus-visible { opacity: 1; color: var(--sangue); outline: none; }
+.link.mais { padding-left: 0; }
+.campo-assinatura { border-top: 1px dashed rgba(43,29,18,.35); padding-top: 12px; }
+.campo-assinatura small { display: block; margin-top: 6px; }
+
 @media (max-width: 480px) {
   .carta-papel { padding: 16px 4px 8px; }
   .lacre img { width: min(560px, 92vw); }
@@ -268,6 +344,9 @@ input[type="date"]::-webkit-calendar-picker-indicator { filter: sepia(1) opacity
   .sair { left: -2px; top: 6px; }
   .cartao { flex-basis: 100%; }
   .duas { grid-template-columns: 1fr; }
+  .lista.mesa { gap: 18px 0; }
+  .cartao.contrato { margin-top: 0; }
+  .sala { font-size: 1.2rem; }
   .abas { justify-content: space-between; }
   .aba { font-size: .7rem; letter-spacing: .12em; }
 }
